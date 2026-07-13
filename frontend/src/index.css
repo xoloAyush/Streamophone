@@ -1,0 +1,197 @@
+@import "tailwindcss";
+@plugin "daisyui" {
+  themes: all;
+}
+@plugin "daisyui/theme" {
+  name: "mytheme";
+  default: true;
+  prefersdark: true;
+  color-scheme: dark;
+
+  /* Base */
+  --color-base-100: oklch(18% 0.04 145);
+  --color-base-200: oklch(22% 0.04 145);
+  --color-base-300: oklch(28% 0.05 145);
+
+  --color-base-content: oklch(97% 0.01 145);
+
+  /* Primary */
+  --color-primary: oklch(84% 0.18 125);
+  --color-primary-content: oklch(16% 0.02 145);
+
+  /* Secondary */
+  --color-secondary: oklch(42% 0.08 150);
+  --color-secondary-content: oklch(98% 0.01 145);
+
+  /* Accent */
+  --color-accent: oklch(78% 0.16 135);
+  --color-accent-content: oklch(18% 0.02 145);
+
+  /* Neutral */
+  --color-neutral: oklch(24% 0.03 145);
+  --color-neutral-content: oklch(96% 0.01 145);
+
+  /* Status */
+  --color-info: oklch(72% 0.13 230);
+  --color-info-content: oklch(98% 0.01 230);
+
+  --color-success: oklch(74% 0.17 145);
+  --color-success-content: oklch(18% 0.02 145);
+
+  --color-warning: oklch(83% 0.17 90);
+  --color-warning-content: oklch(20% 0.02 90);
+
+  --color-error: oklch(66% 0.22 25);
+  --color-error-content: oklch(98% 0.01 25);
+
+  /* Radius */
+  --radius-selector: 1rem;
+  --radius-field: 1rem;
+  --radius-box: 1.75rem;
+
+  /* Border */
+  --border: 1px;
+
+  /* Effects */
+  --depth: 2;
+  --noise: 0;
+}
+
+@plugin "daisyui/theme" {
+  name: "whats";
+  default: true;
+  prefersdark: false;
+  color-scheme: light;
+
+  /* ===========================
+     Base Colors
+     =========================== */
+
+  --color-base-100: oklch(98% 0.01 120); /* Page Background */
+  --color-base-200: oklch(96% 0.01 120); /* Sections */
+  --color-base-300: oklch(100% 0 0);     /* Cards */
+
+  --color-base-content: oklch(22% 0.02 150);
+
+  /* ===========================
+     Brand Colors
+     =========================== */
+
+  --color-primary: oklch(74% 0.18 145);
+  --color-primary-content: oklch(99% 0.01 145);
+
+  --color-secondary: oklch(90% 0.05 145);
+  --color-secondary-content: oklch(24% 0.03 145);
+
+  --color-accent: oklch(80% 0.14 135);
+  --color-accent-content: oklch(20% 0.02 145);
+
+  --color-neutral: oklch(94% 0.01 150);
+  --color-neutral-content: oklch(30% 0.02 150);
+
+  /* ===========================
+     Status
+     =========================== */
+
+  --color-info: oklch(72% 0.13 240);
+  --color-info-content: oklch(98% 0.01 240);
+
+  --color-success: oklch(72% 0.17 145);
+  --color-success-content: oklch(98% 0.01 145);
+
+  --color-warning: oklch(82% 0.16 90);
+  --color-warning-content: oklch(22% 0.02 90);
+
+  --color-error: oklch(66% 0.22 25);
+  --color-error-content: oklch(98% 0.01 25);
+
+  /* ===========================
+     Radius
+     =========================== */
+
+  --radius-selector: 1rem;
+  --radius-field: 1rem;
+  --radius-box: 2rem;
+
+  /* ===========================
+     Sizes
+     =========================== */
+
+  --size-selector: 0.25rem;
+  --size-field: 0.25rem;
+
+  /* ===========================
+     Border
+     =========================== */
+
+  --border: 1px;
+
+  /* ===========================
+     Effects
+     =========================== */
+
+  --depth: 2;
+  --noise: 0;
+}
+
+
+.btn {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  width: 100%;
+  padding: 0.75rem 1rem;
+  border-radius: 1rem;
+  border: 1px solid none;
+  color: var(--color-base-content);
+  transition: all 0.2s ease;
+  font-weight: 700;
+}
+
+.btn1 {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  width: 20%;
+  padding: 0.75rem 1rem;
+  border-radius: 1rem;
+  border: 1px solid none;
+  color: var(--color-base-content);
+  transition: all 0.2s ease;
+  font-weight: 700;
+}
+
+.btn:hover,.btn1:hover {
+  background: var(--color-base-300);
+}
+
+.btn-active, .btn1-active {
+  background: color-mix(in oklch, var(--color-primary) 80%, transparent);
+  color: var(--color-base-100);
+  
+}
+
+.btn-active:hover, .btn1-active:hover {
+  background: var(--color-neutral);
+  color: var(--color-primary);
+  border-color: var(--color-primary);
+}
+
+
+
+/* .btn:hover {
+  background: var(--color-base-300);
+}
+
+.btn-active {
+  background: color-mix(in oklch, var(--color-primary) 80%, transparent);
+  color: var(--color-base-100);
+  
+}
+
+.btn-active:hover {
+  background: var(--color-neutral);
+  color: var(--color-primary);
+  border-color: var(--color-primary);
+}
+bg-primary hover:bg-neutral */
