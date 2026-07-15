@@ -4,30 +4,138 @@ import FriendRequest from "../models/friendRequest.model.js";
 import { generateToken } from "../utils/generateToken.js";
 import { upsertStreamUser } from "../config/stream.js";
 
-export async function getRecommendedUsers(req, res) {
+function getCity(location = '') {
+    return location.split(",")[0].trim().toLowerCase();
+}
 
-     try {
+export async function getRecommendedUsers(req, res) {
+  
+  try {
+
     const currentUser = req.user;
 
-    const recommendedUsers = await User.find({
+    // Get all users except yourself and existing friends
+    const users = await User.find({
       _id: {
         $nin: [...currentUser.friends, currentUser._id],
       },
     }).select(
-      "_id fullName profilePic location bio nativeLanguage learningLanguage"
+      "_id fullName profilePic location bio nativeLanguage learningLanguage isOnline lastSeen"
     );
+
+    // Calculate recommendation score
+    const recommendedUsers = users
+      .map((user) => {
+        let score = 0;
+        const reasons = [];
+
+        const nativeMatch =
+  user.nativeLanguage === currentUser.learningLanguage;
+
+   const learningMatch =
+  user.learningLanguage === currentUser.nativeLanguage;
+
+if (nativeMatch && learningMatch) {
+  score += 80;
+
+  reasons.push("Perfect language exchange partner");
+} else {
+  if (nativeMatch) {
+    score += 50;
+    reasons.push("Native speaker of your learning language");
+  }
+
+  if (learningMatch) {
+    score += 30;
+    reasons.push("Learning your native language");
+  }
+
+  if(user.learningLanguage === currentUser.learningLanguage){
+    score += 20;
+    reasons.push("Learning your learning language like you");
+  }
+
+  if(user.nativeLanguage === currentUser.nativeLanguage){
+    score += 20;
+    reasons.push("Native speaker like you");
+  }
+}
+
+        if (getCity(user.location) === getCity(currentUser.location)) {
+    score += 5;
+    reasons.push("Lives in same area");
+}
+
+if (user.isOnline) {
+    score += 5;
+    reasons.push("Currently online");
+}
+
+        return {
+          ...user.toObject(),
+          matchScore: score,
+          reasons,
+        };
+      })
+      // .filter(user => user.matchScore > 0)
+      .sort((a, b) => b.matchScore - a.matchScore);
 
     return res.status(200).json({
       success: true,
       users: recommendedUsers,
     });
 
-  }catch(err){
-        res.status(500).json({
-            message: "Internal Server Error",
-            error: err.message,
-        });
+  } catch (err) {
+    return res.status(500).json({
+      success: false,
+      message: "Internal Server Error",
+      error: err.message,
+    });
+  }
+}
+
+export async function getExploreUsers(req, res) {
+  try {
+    const currentUser = req.user;
+
+    const { native, learning, location } = req.query;
+
+    const query = {
+      _id: {
+        $nin: [...currentUser.friends, currentUser._id],
+      },
+    };
+
+    if (native) {
+      query.nativeLanguage = new RegExp(`^${native}$`, "i");
     }
+
+    if (learning) {
+      query.learningLanguage = new RegExp(`^${learning}$`, "i");
+    }
+
+    if (location) {
+      query.location = {
+        $regex: location,
+        $options: "i",
+      };
+    }
+
+    const users = await User.find(query).select(
+      "_id fullName profilePic location bio nativeLanguage learningLanguage"
+    );
+
+    return res.status(200).json({
+      success: true,
+      users,
+    });
+
+  } catch (err) {
+    return res.status(500).json({
+      success: false,
+      message: err.message,
+    });
+  }
 }
 
 export async function getMyFriends(req, res) {

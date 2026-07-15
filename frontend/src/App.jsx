@@ -12,6 +12,7 @@ import useAuthUser from "./hooks/userAuthUser";
 import Layout from "./components/Layout";
 import { useThemeStore } from "./hooks/useThemeStore";
 import PageLoader from "./components/PageLoader";
+// import FriendsPage from "./pages/FriendsPage";
 
 function App() {
 
@@ -104,6 +105,15 @@ const {theme} = useThemeStore()
     path="/onboarding"
     element={isAuthenticated ? <OnBoardPage /> : <Navigate to="/login" />}
   />
+
+  {/* <Route
+    path="/friends"
+    element={isAuthenticated && isOnboarded ? ( 
+      <Layout showSidebar={true}>
+    <FriendsPage />
+    </Layout> ) : 
+      (<Navigate to={isAuthenticated ? "/onboarding" : "/login"} replace /> )}
+  /> */}
 </Routes>
 
 <Toaster/>

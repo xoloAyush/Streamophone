@@ -4,7 +4,8 @@ import { getRecommendedUsers,
      acceptFriendRequest,
     getOutgoingFriendReqs,
   sendFriendRequest,
-  getFriendRequests
+  getFriendRequests,
+  getExploreUsers
  } from "../controllers/user.controller.js";
 import { protect } from "../middleware/auth.middleware.js";
 
@@ -14,6 +15,7 @@ router.use(protect); // Apply the protect middleware to all routes in this route
 
 router.get("/recommended", getRecommendedUsers);
 router.get("/friends", getMyFriends);
+router.get("/explore", getExploreUsers);
 
 router.post("/friend-request/:id", sendFriendRequest);
 router.put("/friend-request/:id/accept", acceptFriendRequest);

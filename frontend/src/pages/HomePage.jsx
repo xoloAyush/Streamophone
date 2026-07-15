@@ -1,8 +1,11 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 // import { useEffect, useState } from "react";
+import { LANGUAGES } from '../constants/index'
+
 import {
   getOutgoingFriendReqs,
   getRecommendedUsers,
+  getExploreUsers,
   getUserFriends,
   sendFriendRequest,
 } from "../lib/api";
@@ -16,7 +19,30 @@ import FriendCard, { getLanguageFlag } from "../components/FriendCard";
 import NoFriendsFound from "../components/NoFriendsFound";
 import toast from "react-hot-toast";
 
+import { useState } from "react";
+
+
+
 const HomePage = () => {
+
+  const [filters, setFilters] = useState({
+  native: "",
+  learning: "",
+  location: "",
+});
+
+const hasActiveFilters =
+  filters.native || filters.learning || filters.location;
+
+  const getStars = (score) => {
+  if (score >= 90) return "⭐⭐⭐⭐⭐";
+  if (score >= 70) return "⭐⭐⭐⭐☆";
+  if (score >= 50) return "⭐⭐⭐☆☆";
+  if (score >= 30) return "⭐⭐☆☆☆";
+  if (score > 0) return "⭐☆☆☆☆";
+  return "";
+};
+
   const queryClient = useQueryClient();
 
   const { data: friends = [], isLoading: loadingFriends } = useQuery({
@@ -34,6 +60,18 @@ const HomePage = () => {
   // refetchOnWindowFocus: false,
   // refetchOnReconnect: false,
   });
+
+   const {
+  data: exploreUsers = [],
+  isLoading: loadingExplore,
+} = useQuery({
+  queryKey: ["exploreUsers", filters],
+  queryFn: () => getExploreUsers(filters),
+  enabled:
+    !!filters.native ||
+    !!filters.learning ||
+    !!filters.location,
+});
 
   const { data: outgoingFriendReqs } = useQuery({
     queryKey: ["outgoingFriendReqs"],
@@ -146,6 +184,13 @@ const HomePage = () => {
                               {user.location}
                             </div>
                           )}
+                          <h3 className="font-light text-primary opacity-70">
+  {user.matchScore > 0 && (
+    <>
+      {getStars(user.matchScore)} {user.matchScore}% Match
+    </>
+  )}
+</h3>
                         </div>
                       </div>
 
@@ -160,6 +205,19 @@ const HomePage = () => {
                           Learning: {capitialize(user.learningLanguage)}
                         </span>
                       </div>
+
+                      {user.reasons.length > 0 && (
+  <div className="flex flex-wrap gap-2 mt-2">
+    {user.reasons.map((reason, index) => (
+      <span
+        key={index}
+        className="badge badge-success badge-outline text-xs"
+      >
+        {reason}
+      </span>
+    ))}
+  </div>
+)}
 
                       {user.bio && <p className="text-sm opacity-70">{user.bio.length > 100 ? `${user.bio.slice(0, 100)}...` : user.bio}
                         </p>}
@@ -191,6 +249,174 @@ const HomePage = () => {
             </div>
           )}
         </section>
+
+       <section className="mt-16">
+  <div className="mb-8">
+    <h2 className="text-3xl font-bold">Explore People</h2>
+
+    <p className="opacity-70 mb-6">
+      Find language partners using filters.
+    </p>
+
+    <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+      {/* Native Language */}
+      <select
+        className="select select-bordered w-full"
+        value={filters.native}
+        onChange={(e) =>
+          setFilters({
+            ...filters,
+            native: e.target.value,
+          })
+        }
+      >
+        <option value="">All Native Languages</option>
+
+        {LANGUAGES.map((language) => (
+          <option key={language} value={language}>
+            {language}
+          </option>
+        ))}
+      </select>
+
+      {/* Learning Language */}
+      <select
+        className="select select-bordered w-full"
+        value={filters.learning}
+        onChange={(e) =>
+          setFilters({
+            ...filters,
+            learning: e.target.value,
+          })
+        }
+      >
+        <option value="">All Learning Languages</option>
+
+        {LANGUAGES.map((language) => (
+          <option key={language} value={language}>
+            {language}
+          </option>
+        ))}
+      </select>
+
+      {/* Location */}
+      <input
+        type="text"
+        placeholder="Location"
+        className="input input-bordered w-full"
+        value={filters.location}
+        onChange={(e) =>
+          setFilters({
+            ...filters,
+            location: e.target.value,
+          })
+        }
+      />
+    </div>
+  </div>
+
+  {!hasActiveFilters ? (
+    <div className="card bg-base-200 p-8 text-center">
+      <h3 className="font-semibold text-lg">
+        Start exploring people
+      </h3>
+
+      <p className="opacity-70 mt-2">
+        Select a language or enter a location to find people.
+      </p>
+    </div>
+  ) : loadingExplore ? (
+    <div className="flex justify-center py-12">
+      <span className="loading loading-spinner loading-lg"></span>
+    </div>
+  ) : exploreUsers.length === 0 ? (
+    <div className="card bg-base-200 p-8 text-center">
+      <h3 className="font-semibold text-lg">
+        No users found
+      </h3>
+
+      <p className="opacity-70">
+        Try changing your filters.
+      </p>
+    </div>
+  ) : (
+    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+      {exploreUsers.map((user) => {
+        const hasRequestBeenSent =
+          outgoingRequestsIds.has(user._id);
+
+        return (
+          <div
+            key={user._id}
+            className="card bg-base-200 hover:shadow-lg transition-all duration-300"
+          >
+            <div className="card-body space-y-4">
+              <div className="flex items-center gap-3">
+                <div className="avatar">
+                  <div className="w-16 rounded-full">
+                    <img
+                      src={user.profilePic}
+                      alt={user.fullName}
+                    />
+                  </div>
+                </div>
+
+                <div>
+                  <h3 className="font-semibold text-lg">
+                    {user.fullName}
+                  </h3>
+
+                  <p className="text-xs opacity-70 flex items-center gap-1">
+                    <MapPinIcon size={14} />
+                    {user.location}
+                  </p>
+                </div>
+              </div>
+
+              <div className="flex flex-wrap gap-2">
+                <span className="badge badge-secondary">
+                  {getLanguageFlag(user.nativeLanguage)}
+                  Native: {capitialize(user.nativeLanguage)}
+                </span>
+
+                <span className="badge badge-outline">
+                  {getLanguageFlag(user.learningLanguage)}
+                  Learning: {capitialize(user.learningLanguage)}
+                </span>
+              </div>
+
+              {user.bio && (
+                <p className="text-sm opacity-70">
+                  {user.bio}
+                </p>
+              )}
+
+              <button
+                className={`w-full mt-2  flex items-center text-center justify-center p-2 rounded-xl font-bold ${
+                          hasRequestBeenSent ? "btn-disabled" : "bg-primary hover:bg-neutral text-base-100 hover:text-primary cursor-pointer hover:border-primary border transition-all"
+                }`}
+                disabled={hasRequestBeenSent || isPending}
+                onClick={() => sendRequestMutation(user._id)}
+              >
+                {hasRequestBeenSent ? (
+                  <>
+                    <CheckCircleIcon className="size-4 mr-2" />
+                    Request Sent
+                  </>
+                ) : (
+                  <>
+                    <UserPlusIcon className="size-4 mr-2" />
+                    Send Friend Request
+                  </>
+                )}
+              </button>
+            </div>
+          </div>
+        );
+      })}
+    </div>
+  )}
+</section>
       </div>
     </div>
   );

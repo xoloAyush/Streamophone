@@ -47,6 +47,31 @@ export const getRecommendedUsers = async () => {
           return response.users
         }
 
+export const getExploreUsers = async (filters) => {
+  const params = new URLSearchParams();
+
+  if (filters.native) {
+    params.append("native", filters.native);
+  }
+
+  if (filters.learning) {
+    params.append("learning", filters.learning);
+  }
+
+  if (filters.location) {
+    params.append("location", filters.location);
+  }
+
+  const response = await fetchInstance(
+    `/user/explore?${params.toString()}`,
+    {
+      method: "GET",
+    }
+  );
+
+  return response.users;
+};
+
 export const getOutgoingFriendReqs = async () => {
     
             const response = await fetchInstance("/user/outgoing-friend-requests", {
