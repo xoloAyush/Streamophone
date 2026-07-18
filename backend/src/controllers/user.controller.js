@@ -159,6 +159,22 @@ export async function getMyFriends(req, res) {
   }
 }
 
+export async function getUserById(req, res) {
+  try {
+    const user = await User.findById(req.params.id).select(
+      "_id fullName profilePic nativeLanguage learningLanguage"
+    );
+
+    if (!user) {
+      return res.status(404).json({ message: "User not found" });
+    }
+
+    res.json(user);
+  } catch (err) {
+    res.status(500).json({ message: err.message });
+  }
+}
+
 export async function sendFriendRequest(req, res) {
 
     try {

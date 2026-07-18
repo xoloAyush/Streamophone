@@ -8,7 +8,7 @@ const ThemeSelector = () => {
   return (
     <div className="dropdown dropdown-end">
       {/* DROPDOWN TRIGGER */}
-      <button tabIndex={0} className="btn btn-ghost btn-circle">
+      <button tabIndex={0} className="btn btn-ghost btn-primary btn-circle">
         <PaletteIcon className="size-5" />
       </button>
 

@@ -2,6 +2,7 @@ import bcrypt from "bcrypt";
 import User from "../models/user.model.js";
 import { generateToken } from "../utils/generateToken.js";
 import { upsertStreamUser } from "../config/stream.js";
+import { sendWelcomeEmail, sendLoginEmail } from "../utils/sendEmail.js";
 
 const cookieOptions = {
   httpOnly: true,
@@ -60,6 +61,8 @@ const randomAvatar = `https://api.dicebear.com/10.x/thumbs/svg`;
       profilePic: randomAvatar,
     });
 
+await sendWelcomeEmail(newUser.email, newUser.fullName);
+
     try {
       await upsertStreamUser({
         id: newUser._id.toString(),
@@ -116,6 +119,8 @@ export const signin = async (req, res) => {
     const token = generateToken(user._id);
 
     res.cookie("token", token, cookieOptions);
+
+    await sendLoginEmail(user.email, user.fullName);
 
     res.json({
       success: true,

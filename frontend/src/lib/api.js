@@ -109,3 +109,38 @@ export async function getStreamToken() {
   });
   return response;
 }
+
+export async function getUserById({id}) {
+  const response = await fetchInstance(`/user/${id}`,{
+    method: 'GET'
+  });
+  console.log({id})
+  return response;
+}
+
+
+// ------ai -------------
+
+export const translateMessage = (body)=>
+    fetchInstance("/ai/translate",{
+        method:"POST",
+        body:JSON.stringify(body)
+    });
+
+export const improveMessage = (body)=>
+    fetchInstance("/ai/improve",{
+        method:"POST",
+        body:JSON.stringify(body)
+    });
+
+export const friendlyMessage=(body)=>
+    fetchInstance("/ai/friendly",{
+        method:"POST",
+        body:JSON.stringify(body)
+    });
+
+export const formalMessage=(body)=>
+    fetchInstance("/ai/formal",{
+        method:"POST",
+        body:JSON.stringify(body)
+    });
