@@ -28,26 +28,29 @@ In-chat call links — start a video call and share a join link directly as a ch
 LayerTechnologyFrameworkReact 19 + Vite 8RoutingReact Router v8Data fetchingTanStack QueryChatstream-chat, stream-chat-react (v14)Video@stream-io/video-react-sdkStylingTailwind CSS 4 + daisyUI 5Notificationsreact-hot-toastHTTP clientaxiosAvatarsDicebear (adventurer, open-peeps)State (misc)zustandIconslucide-react
 
 
-📁 Project Structure (frontend)
+
+## 📁 Project Structure
+
+```text
+backend/
+├── config/          # Database, Stream & AI configuration
+├── controllers/     # Route controllers
+├── middleware/      # Authentication middleware
+├── models/          # MongoDB schemas
+├── prompts/         # AI prompt templates
+├── routes/          # Express routes
+├── services/        # Business logic & AI services
+└── utils/           # Helper functions
 
 frontend/
-├── src/
-│   ├── components/
-│   │   ├── AIMessageComposer.jsx   # AI toolbar: translate/improve/friendly/formal
-│   │   ├── CallButton.jsx
-│   │   ├── ChatLoader.jsx
-│   │   └── ...
-│   ├── hooks/
-│   │   ├── useAI.js                # AI request/response + loading state hooks
-│   │   └── userAuthUser.js
-│   ├── lib/
-│   │   └── api.js                  # getStreamToken and other API calls
-│   ├── pages/
-│   │   ├── ChatPage.jsx            # Chat + video call screen
-│   │   └── ...
-│   └── index.css                   # Tailwind + daisyUI theme config
-├── package.json
-└── vite.config.js
+├── assets/
+├── components/      # Reusable UI components
+├── context/         # React Context
+├── hooks/           # Custom hooks
+├── lib/             # API & utilities
+├── pages/           # Application pages
+└── App.jsx
+```
 
 
 🚀 Getting Started
@@ -62,7 +65,7 @@ Backend service issuing Stream user tokens (getStreamToken)
 
 Installation
 
-bashgit clone https://github.com/xoloAyush/streamophone.git
+bash git clone https://github.com/xoloAyush/streamophone.git
 cd streamophone/frontend
 npm install
 
@@ -112,3 +115,7 @@ Both are built from OKLCH color tokens for consistent contrast across light/dark
 
 stream-chat-react v14 is a beta-track major version — hook names differ from v13 (useMessageComposerController replaces useMessageComposer, which itself replaced the older useMessageInputContext). Pin exact versions rather than caret ranges if stability matters.
 Keep custom global CSS classes (e.g. sidebar buttons) scoped separately from daisyUI's .btn to avoid style leakage across the app.
+
+# ⭐ Support
+
+If you like this project, consider giving it a ⭐ on GitHub!
